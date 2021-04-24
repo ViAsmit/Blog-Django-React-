@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import django_heroku
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'blog',
     'blog_api',
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -62,7 +66,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / '../react/build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,37 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.1/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_URL = '/static/'
-
-# Permissions:
-# AllowAny
-# IsAuthenticated
-# IsAdminUser
-# IsAuthenticatedOrReadOnly
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000"
-]
-
-# Custom user model
 AUTH_USER_MODEL = "users.NewUser"
 
 SIMPLE_JWT = {
@@ -164,4 +137,47 @@ REST_FRAMEWORK = {
     'rest_framework_simplejwt.authentication.JWTAuthentication'
     ],
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Internationalization
+# https://docs.djangoproject.com/en/3.1/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+
+
+django_heroku.settings(locals())
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, '../react/build', 'static')
+STATICFILES_DIRS = []
+
+# If you want to serve user uploaded files add these settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '../react/build', 'media')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Permissions:
+# AllowAny
+# IsAuthenticated
+# IsAdminUser
+# IsAuthenticatedOrReadOnly
+
+
+
+# Custom user model
 
